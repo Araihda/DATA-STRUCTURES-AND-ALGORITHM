@@ -207,19 +207,208 @@ public class Sorting {
         if (algorithmName.equalsIgnoreCase("bubble")) {
             return "Time Complexity: O(n^2)";
         } else if (algorithmName.equalsIgnoreCase("selection")) {
-            return "Time Complexity: O(n^2) — but fewer swaps than bubble sort";
+            return "Time Complexity: O(n^2)";
         } else if (algorithmName.equalsIgnoreCase("insertion")) {
-            return "Time Complexity: O(n^2) average, but O(n) if the list is nearly sorted";
+            return "Time Complexity: O(n^2) average, O(n) best case";
         }
         else if (algorithmName.equalsIgnoreCase("merge")) {
-            return "Time Complexity: O(n log n) — very efficient even for large lists!";
+            return "Time Complexity: O(n log n)";
         }
         else if (algorithmName.equalsIgnoreCase("counting")) {
-            return "Time Complexity: O(n + k) — Fast but only for non-negative integers";
+            return "Time Complexity: O(n + k)";
+        }
+        else if (algorithmName.equalsIgnoreCase("quick")) {
+            return "Time Complexity: O(n log n) average, O(n^2) worst case";
+        }
+        else if (algorithmName.equalsIgnoreCase("heap")) {
+            return "Time Complexity: O(n log n)";
+        }
+        else if (algorithmName.equalsIgnoreCase("shell")) {
+            return "Time Complexity: O(n log n) best, O(n^2) worst";
+        }
+        else if (algorithmName.equalsIgnoreCase("bucket")) {
+            return "Time Complexity: O(n + k)";
+        }
+        else if (algorithmName.equalsIgnoreCase("radix")) {
+            return "Time Complexity: O(nk)";
         }
 
 
         return "Time Complexity: Unknown";
+    }
+
+    public static double[] quickSort(double[] array) {
+        if (array == null) {
+            System.out.println("Oops! No array found.");
+            return null;
+        }
+        if (array.length == 0) {
+            System.out.println("Array is empty. Nothing to sort.");
+            return array;
+        }
+        quickSortHelper(array, 0, array.length - 1);
+        return array;
+    }
+    private static void quickSortHelper(double[] array, int low, int high) {
+        if (low < high) {
+            int pi = partition(array, low, high);
+            quickSortHelper(array, low, pi - 1);
+            quickSortHelper(array, pi + 1, high);
+        }
+    }
+    private static int partition(double[] array, int low, int high) {
+        double pivot = array[high];
+        int i = low - 1;
+        for (int j = low; j < high; j++) {
+            if (array[j] <= pivot) {
+                i++;
+                double temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+            }
+        }
+        double temp = array[i + 1];
+        array[i + 1] = array[high];
+        array[high] = temp;
+        return i + 1;
+    }
+
+    public static double[] heapSort(double[] array) {
+        if (array == null) {
+            System.out.println("Oops! No array found.");
+            return null;
+        }
+        if (array.length == 0) {
+            System.out.println("Array is empty. Nothing to sort.");
+            return array;
+        }
+        int n = array.length;
+        for (int i = n / 2 - 1; i >= 0; i--) {
+            heapify(array, n, i);
+        }
+        for (int i = n - 1; i > 0; i--) {
+            double temp = array[0];
+            array[0] = array[i];
+            array[i] = temp;
+            heapify(array, i, 0);
+        }
+        return array;
+    }
+    private static void heapify(double[] array, int n, int i) {
+        int largest = i;
+        int l = 2 * i + 1;
+        int r = 2 * i + 2;
+        if (l < n && array[l] > array[largest]) {
+            largest = l;
+        }
+        if (r < n && array[r] > array[largest]) {
+            largest = r;
+        }
+        if (largest != i) {
+            double swap = array[i];
+            array[i] = array[largest];
+            array[largest] = swap;
+            heapify(array, n, largest);
+        }
+    }
+
+    public static double[] shellSort(double[] array) {
+        if (array == null) {
+            System.out.println("Oops! No array found.");
+            return null;
+        }
+        if (array.length == 0) {
+            System.out.println("Array is empty. Nothing to sort.");
+            return array;
+        }
+        int n = array.length;
+        for (int gap = n / 2; gap > 0; gap /= 2) {
+            for (int i = gap; i < n; i++) {
+                double temp = array[i];
+                int j;
+                for (j = i; j >= gap && array[j - gap] > temp; j -= gap) {
+                    array[j] = array[j - gap];
+                }
+                array[j] = temp;
+            }
+        }
+        return array;
+    }
+
+    public static double[] bucketSort(double[] array) {
+        if (array == null) {
+            System.out.println("Oops! No array found.");
+            return null;
+        }
+        if (array.length == 0) {
+            System.out.println("Array is empty. Nothing to sort.");
+            return array;
+        }
+        int n = array.length;
+        if (n <= 0) return array;
+        @SuppressWarnings("unchecked")
+        java.util.List<Double>[] buckets = new java.util.ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            buckets[i] = new java.util.ArrayList<>();
+        }
+        double max = array[0];
+        double min = array[0];
+        for (int i = 1; i < n; i++) {
+            if (array[i] > max) max = array[i];
+            if (array[i] < min) min = array[i];
+        }
+        double range = (max - min) / n;
+        if (range == 0) range = 1;
+        for (int i = 0; i < n; i++) {
+            int idx = (int)((array[i] - min) / range);
+            if (idx == n) idx--;
+            buckets[idx].add(array[i]);
+        }
+        int idx = 0;
+        for (int i = 0; i < n; i++) {
+            java.util.Collections.sort(buckets[i]);
+            for (double num : buckets[i]) {
+                array[idx++] = num;
+            }
+        }
+        return array;
+    }
+
+    public static int[] radixSort(int[] array) {
+        if (array == null) {
+            System.out.println("Oops! No array found.");
+            return null;
+        }
+        if (array.length == 0) {
+            System.out.println("Array is empty. Nothing to sort.");
+            return array;
+        }
+        int max = array[0];
+        for (int i = 1; i < array.length; i++) {
+            if (array[i] > max) max = array[i];
+        }
+        for (int exp = 1; max / exp > 0; exp *= 10) {
+            countingSortByDigit(array, exp);
+        }
+        return array;
+    }
+    private static void countingSortByDigit(int[] array, int exp) {
+        int n = array.length;
+        int[] output = new int[n];
+        int[] count = new int[10];
+        for (int i = 0; i < n; i++) {
+            count[(array[i] / exp) % 10]++;
+        }
+        for (int i = 1; i < 10; i++) {
+            count[i] += count[i - 1];
+        }
+        for (int i = n - 1; i >= 0; i--) {
+            output[count[(array[i] / exp) % 10] - 1] = array[i];
+            count[(array[i] / exp) % 10]--;
+        }
+        for (int i = 0; i < n; i++) {
+            array[i] = output[i];
+        }
     }
 
 }

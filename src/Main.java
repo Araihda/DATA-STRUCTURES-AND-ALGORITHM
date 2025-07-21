@@ -1,6 +1,6 @@
-import java.util.Scanner;
-import ALGORITHMS.Sorting;
 import ALGORITHMS.Searching;
+import ALGORITHMS.Sorting;
+import java.util.Scanner;
 
 public class Main {
 
@@ -46,11 +46,16 @@ public class Main {
         System.out.println("3. Insertion Sort");
         System.out.println("4. Merge Sort");
         System.out.println("5. Counting Sort (only for non-negative integers)");
+        System.out.println("6. Quick Sort");
+        System.out.println("7. Heap Sort");
+        System.out.println("8. Shell Sort");
+        System.out.println("9. Bucket Sort");
+        System.out.println("10. Radix Sort (only for non-negative integers)");
 
-        System.out.print("Enter your choice (1–5): ");
+        System.out.print("Enter your choice (1–10): ");
         int option = scanner.nextInt();
 
-        if (option == 5) {
+        if (option == 5 || option == 10) {
             System.out.print("How many numbers do you want to sort? ");
             int n = scanner.nextInt();
             int[] array = new int[n];
@@ -60,13 +65,21 @@ public class Main {
                 array[i] = scanner.nextInt();
             }
 
-            int[] sorted = Sorting.countingSort(array);
+            int[] sorted = null;
+            String algo = "";
+            if (option == 5) {
+                sorted = Sorting.countingSort(array);
+                algo = "counting";
+            } else if (option == 10) {
+                sorted = Sorting.radixSort(array);
+                algo = "radix";
+            }
             System.out.println("Sorted array:");
             for (int num : sorted) {
                 System.out.print(num + " ");
             }
             System.out.println();
-            System.out.println(Sorting.getTimeComplexity("counting"));
+            System.out.println(Sorting.getTimeComplexity(algo));
         } else {
             System.out.print("How many numbers do you want to sort? ");
             int n = scanner.nextInt();
@@ -96,6 +109,22 @@ public class Main {
                 case 4:
                     sorted = Sorting.mergeSort(array);
                     algo = "merge";
+                    break;
+                case 6:
+                    sorted = Sorting.quickSort(array);
+                    algo = "quick";
+                    break;
+                case 7:
+                    sorted = Sorting.heapSort(array);
+                    algo = "heap";
+                    break;
+                case 8:
+                    sorted = Sorting.shellSort(array);
+                    algo = "shell";
+                    break;
+                case 9:
+                    sorted = Sorting.bucketSort(array);
+                    algo = "bucket";
                     break;
                 default:
                     System.out.println("Invalid sorting option.");
